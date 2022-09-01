@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        Canvas
+    </title>
+    <style type = "text/css">
+        canvas{
+            background-color: blue;
+        }   
+    </style>
+</head>
+<body>
+    <canvas id="mycanvas" width="1000" height="1200">
+        Hola tu navegador no funciona
+    </canvas>
+
+
+    <script>
+        var canvas = null
+        var ctx = null;
+        var fig = "arc";
+        var press = false;
+        var super_x = 100, super_y= 225;
+        var player1 = null;
+        var player2 = null;
+        var pared = [192];
+        var direccion = null;
+        var speed = 2;
+        var pause = true;
+
+        var bob = new Image();
+        var cangreburger = new Image(); 
+        var bobFinal = new Image();
+        var pez = new Image();
+        var bobFinal = new Image();
+        var fondo = new Image();
+
+        var fondoBob = new Audio();   
+        var aplausos = new Audio();
+
+        var seTocaron= false;
+        var centesimas = "00";
+        var segundos = 0;
+        var minutos = 0;
+        var intervalo;
+
+        var appendCentesimas;
+        var appendSegundos;
+        var appendMinutos;
+
+        
+        function run (){
+            canvas = document.getElementById('mycanvas');
+            ctx = canvas.getContext('2d');
+
+            player1 = new Cuadro(70, 90, 25, 25, "yellow");
+
+            player2 = new Cuadro(890, 980, 40, 40, "yellow");
+
+            //Cuadro inicial
+            pared[0] = new Cuadro(50, 80, 1, 890, "black");
+            pared[1] = new Cuadro(950, 80, 1, 890, "black");
+            pared[2] = new Cuadro(50, 80, 900, 1, "black");
+            pared[3] = new Cuadro(50, 970, 860, 1, "black");
+
+            // Relleno del laberinto
+            pared[4] = new Cuadro(100, 130, 130, 1, "black");
+            pared[5] = new Cuadro(230, 130, 1, 45, "black");
+            pared[6] = new Cuadro(280, 80, 1, 50, "black");
+            pared[7] = new Cuadro(280, 130, 200, 1, "black");
+            pared[8] = new Cuadro(480, 130, 1, 40, "black");
+            pared[9] = new Cuadro(480, 170, 110, 1, "black");
+            pared[9] = new Cuadro(230, 175, 200, 1, "black");
+            pared[10] = new Cuadro(100, 180, 80, 1, "black");
+            pared[11] = new Cuadro(140, 180, 1, 40, "black");
+            pared[12] = new Cuadro(480, 170, 130, 1, "black");
+            pared[13] = new Cuadro(480, 170, 130, 1, "black");
+            pared[14] = new Cuadro(530, 130, 130, 1, "black");
+            pared[15] = new Cuadro(660, 130, 1, 200, "black");
+            pared[16] = new Cuadro(710, 80, 1, 140, "black");
+            pared[17] = new Cuadro(550, 170, 1, 80, "black");
+            pared[18] = new Cuadro(550, 250, 40, 1, "black");
+            pared[19] = new Cuadro(590, 250, 1, 40, "black");
+            pared[20] = new Cuadro(600, 215, 60, 1, "black");
+            pared[21] = new Cuadro(550, 330, 110, 1, "black");
+            pared[22] = new Cuadro(140, 220, 90, 1, "black");
+            pared[23] = new Cuadro(280, 175, 1, 40, "black");
+            pared[24] = new Cuadro(710, 170, 50, 1, "black");
+            pared[25] = new Cuadro(710, 220, 50, 1, "black");
+            pared[26] = new Cuadro(770, 125, 80, 1, "black");
+            pared[27] = new Cuadro(805, 125, 1, 170, "black");
+            pared[28] = new Cuadro(850, 125, 1, 410, "black");
+            pared[29] = new Cuadro(900, 125, 1, 230, "black");
+            pared[30] = new Cuadro(900, 355, 50, 1, "black");
+            pared[31] = new Cuadro(660, 260, 40, 1, "black");
+            pared[32] = new Cuadro(230, 220, 1, 70, "black");
+            pared[33] = new Cuadro(430, 175, 1, 50, "black");
+            pared[34] = new Cuadro(430, 225, 60, 1, "black");
+            pared[35] = new Cuadro(490, 225, 1, 70, "black");
+            pared[36] = new Cuadro(460, 225, 1, 30, "black");
+            pared[37] = new Cuadro(455, 295, 95, 1, "black");
+            pared[38] = new Cuadro(550, 295, 1, 35, "black");
+            pared[39] = new Cuadro(455, 295, 1, 35, "black");
+            pared[40] = new Cuadro(700, 260, 1, 75, "black");
+            pared[41] = new Cuadro(760, 220, 1, 220, "black");
+            pared[42] = new Cuadro(190, 290, 80, 1, "black");
+            pared[43] = new Cuadro(270, 260, 1, 30, "black");
+            pared[44] = new Cuadro(270, 260, 30, 1, "black");
+            pared[45] = new Cuadro(300, 230, 1, 30, "black");
+            pared[46] = new Cuadro(300, 230, 30, 1, "black");
+            pared[47] = new Cuadro(330, 200, 1, 30, "black");
+            pared[48] = new Cuadro(330, 200, 30, 1, "black");
+            pared[49] = new Cuadro(360, 175, 1, 25, "black");
+            pared[50] = new Cuadro(190, 290, 1, 40, "black");
+            pared[51] = new Cuadro(150, 330, 40, 1, "black");
+            pared[52] = new Cuadro(760, 330, 40, 1, "black");
+            pared[53] = new Cuadro(670, 400, 220, 1, "black");
+            pared[54] = new Cuadro(80, 220, 1, 40, "black");
+            pared[55] = new Cuadro(80, 260, 60, 1, "black");
+            pared[56] = new Cuadro(120, 260, 1, 30, "black");
+            pared[57] = new Cuadro(90, 290, 30, 1, "black");
+            pared[58] = new Cuadro(90, 290, 1, 100, "black");
+            pared[59] = new Cuadro(90, 390, 160, 1, "black");
+            pared[60] = new Cuadro(250, 350, 1, 80, "black");
+            pared[61] = new Cuadro(220, 350, 80, 1, "black");
+            pared[62] = new Cuadro(300, 310, 1, 40, "black");
+            pared[63] = new Cuadro(300, 310, 80, 1, "black");
+            pared[64] = new Cuadro(380, 230, 1, 80, "black");
+            pared[65] = new Cuadro(340, 270, 40, 1, "black");
+            pared[66] = new Cuadro(160, 390, 1, 50, "black");
+            pared[67] = new Cuadro(50, 440, 110, 1, "black");
+            pared[68] = new Cuadro(410, 330, 45, 1, "black");
+            pared[69] = new Cuadro(430, 280, 1, 50, "black");
+            pared[70] = new Cuadro(410, 330, 1, 180, "black");
+            pared[71] = new Cuadro(210, 470, 200, 1, "black");
+            pared[72] = new Cuadro(90, 480, 90, 1, "black");
+            pared[73] = new Cuadro(210, 430, 1, 120, "black");
+            pared[74] = new Cuadro(140, 480, 1, 200, "black");
+            pared[99] = new Cuadro(90, 680, 50, 1, "black");
+            pared[100] = new Cuadro(90, 610, 1, 70, "black");
+            pared[75] = new Cuadro(180, 505, 30, 1, "black");
+            pared[76] = new Cuadro(310, 400, 1, 70, "black");
+            pared[77] = new Cuadro(310, 400, 40, 1, "black");
+            pared[78] = new Cuadro(350, 360, 1, 80, "black");
+            pared[79] = new Cuadro(140, 550, 120, 1, "black");
+            pared[80] = new Cuadro(50, 560, 40, 1, "black");
+            pared[81] = new Cuadro(90, 520, 1, 40, "black");
+            pared[82] = new Cuadro(910, 470, 40, 1, "black");
+            pared[83] = new Cuadro(910, 430, 1, 40, "black");
+            pared[84] = new Cuadro(260, 550, 1, 40, "black");
+            pared[85] = new Cuadro(510, 340, 1, 40, "black");
+            pared[86] = new Cuadro(460, 380, 50, 1, "black");
+            pared[87] = new Cuadro(460, 380, 1, 130, "black");
+            pared[88] = new Cuadro(600, 330, 1, 160, "black");
+            pared[89] = new Cuadro(550, 400, 1, 60, "black");
+            pared[90] = new Cuadro(500, 430, 50, 1, "black");
+            pared[91] = new Cuadro(500, 430, 1, 50, "black");
+            pared[92] = new Cuadro(500, 480, 30, 1, "black");
+            pared[93] = new Cuadro(530, 480, 1, 50, "black");
+            pared[94] = new Cuadro(600, 490, 40, 1, "black");
+            pared[95] = new Cuadro(600, 440, 120, 1, "black");
+            pared[96] = new Cuadro(720, 440, 1, 50, "black");
+            pared[97] = new Cuadro(720, 490, 80, 1, "black");
+            pared[98] = new Cuadro(800, 440, 1, 50, "black");
+            pared[101] = new Cuadro(140, 640, 30, 1, "black");
+            pared[102] = new Cuadro(810, 535, 80, 1, "black");
+            pared[103] = new Cuadro(890, 535, 1, 80, "black");
+            pared[104] = new Cuadro(840, 615, 50, 1, "black");
+            pared[105] = new Cuadro(760, 490, 1, 80, "black");
+            pared[106] = new Cuadro(760, 570, 80, 1, "black");
+            pared[107] = new Cuadro(530, 530, 180, 1, "black");
+            pared[108] = new Cuadro(460, 510, 30, 1, "black");
+            pared[109] = new Cuadro(280, 510, 80, 1, "black");
+            pared[110] = new Cuadro(710, 530, 1, 85, "black");
+            pared[111] = new Cuadro(360, 510, 1, 130, "black");
+            pared[112] = new Cuadro(320, 510, 1, 130, "black");
+            pared[113] = new Cuadro(490, 510, 1, 70, "black");
+            pared[114] = new Cuadro(360, 550, 130, 1, "black");
+            pared[115] = new Cuadro(230, 640, 90, 1, "black");
+            pared[116] = new Cuadro(230, 600, 1, 80, "black");
+            pared[117] = new Cuadro(190, 600, 40, 1, "black");
+            pared[118] = new Cuadro(180, 680, 135, 1, "black");
+            pared[119] = new Cuadro(710, 615, 45, 1, "black");
+            pared[120] = new Cuadro(490, 580, 40, 1, "black");
+            pared[121] = new Cuadro(530, 560, 1, 160, "black");
+            pared[122] = new Cuadro(530, 560, 80, 1, "black");
+            pared[123] = new Cuadro(610, 560, 1, 40, "black");
+            pared[124] = new Cuadro(610, 600, 40, 1, "black");
+            pared[125] = new Cuadro(650, 560, 1, 100, "black");
+            pared[126] = new Cuadro(650, 660, 40, 1, "black");
+            pared[127] = new Cuadro(800, 570, 1, 80, "black");
+            pared[128] = new Cuadro(800, 570, 1, 80, "black");
+            pared[129] = new Cuadro(755, 615, 1, 140, "black");
+            pared[130] = new Cuadro(625, 715, 130, 1, "black");
+            pared[131] = new Cuadro(625, 715, 1, 30, "black");
+            pared[132] = new Cuadro(755, 650, 140, 1, "black");
+            pared[133] = new Cuadro(895, 650, 1, 105, "black");
+            pared[134] = new Cuadro(845, 755, 50, 1, "black");
+            pared[135] = new Cuadro(845, 695, 1, 60, "black");
+            pared[136] = new Cuadro(360, 640, 50, 1, "black");
+            pared[137] = new Cuadro(180, 680, 1, 50, "black");
+            pared[138] = new Cuadro(270, 680, 1, 50, "black");
+            pared[139] = new Cuadro(90, 730, 90, 1, "black");
+            pared[140] = new Cuadro(140, 730, 1, 80, "black");
+            pared[141] = new Cuadro(50, 775, 40, 1, "black");
+            pared[141] = new Cuadro(50, 775, 40, 1, "black");
+            pared[142] = new Cuadro(410, 600, 40, 1, "black");
+            pared[143] = new Cuadro(450, 600, 1, 80, "black");
+            pared[144] = new Cuadro(450, 640, 40, 1, "black");
+            pared[145] = new Cuadro(450, 680, 40, 1, "black");
+            pared[146] = new Cuadro(490, 680, 1, 120, "black");
+            pared[147] = new Cuadro(490, 800, 40, 1, "black");
+            pared[148] = new Cuadro(530, 780, 1, 20, "black");
+            pared[149] = new Cuadro(410, 640, 1, 120, "black");
+            pared[150] = new Cuadro(530, 780, 150, 1, "black");
+            pared[151] = new Cuadro(580, 630, 1, 150, "black");
+            pared[152] = new Cuadro(580, 680, 40, 1, "black");
+            pared[153] = new Cuadro(680, 715, 1, 65, "black");
+            pared[154] = new Cuadro(720, 810, 230, 1, "black");
+            pared[155] = new Cuadro(795, 710, 1, 140, "black");
+            pared[156] = new Cuadro(765, 850, 30, 1, "black");
+            pared[157] = new Cuadro(910, 880, 1, 90, "black");
+            pared[158] = new Cuadro(870, 850, 1, 70, "black");
+            pared[158] = new Cuadro(870, 850, 1, 70, "black");
+            pared[159] = new Cuadro(725, 885, 145, 1, "black");
+            pared[160] = new Cuadro(830, 930, 1, 40, "black");
+            pared[161] = new Cuadro(770, 885, 1, 40, "black");
+            pared[161] = new Cuadro(770, 885, 1, 40, "black");
+            pared[162] = new Cuadro(545, 925, 225, 1, "black");
+            pared[163] = new Cuadro(495, 930, 1, 40, "black");
+            pared[164] = new Cuadro(410, 930, 1, 40, "black");
+            pared[165] = new Cuadro(720, 760, 1, 78, "black");
+            pared[166] = new Cuadro(540, 925, 230, 1, "black");
+            pared[167] = new Cuadro(585, 840, 135, 1, "black"); 
+            pared[168] = new Cuadro(620, 885, 1, 40, "black");
+            pared[169] = new Cuadro(690, 840, 1, 40, "black");
+            pared[170] = new Cuadro(540, 880, 1, 45, "black");
+            pared[171] = new Cuadro(585, 840, 1, 40, "black");
+            pared[172] = new Cuadro(350, 880, 190, 1, "black");
+            pared[173] = new Cuadro(350, 880, 1, 40, "black");
+            pared[174] = new Cuadro(350, 880, 1, 40, "black");
+            pared[175] = new Cuadro(450, 730, 1, 200, "black");
+            pared[176] = new Cuadro(410, 730, 40, 1, "black");
+            pared[177] = new Cuadro(370, 760, 40, 1, "black");
+            pared[178] = new Cuadro(50, 930, 40, 1, "black");
+            pared[179] = new Cuadro(90, 810, 170, 1, "black");
+            pared[180] = new Cuadro(90, 870, 40, 1, "black");
+            pared[181] = new Cuadro(200, 870, 1, 100, "black");
+            pared[182] = new Cuadro(130, 930, 40, 1, "black");
+            pared[183] = new Cuadro(90, 810, 1, 60, "black");
+            pared[184] = new Cuadro(130, 870, 1, 60, "black");
+            pared[185] = new Cuadro(170, 870, 120, 1, "black");
+            pared[186] = new Cuadro(290, 770, 1, 100, "black");
+            pared[187] = new Cuadro(190, 770, 130, 1, "black");
+            pared[188] = new Cuadro(240, 930, 80, 1, "black");
+            pared[189] = new Cuadro(320, 720, 1, 210, "black");
+            pared[190] = new Cuadro(320, 830, 90, 1, "black");
+            pared[191] = new Cuadro(320, 720, 40, 1, "black");
+            pared[192] = new Cuadro(360, 680, 1, 40, "black");
+
+            bob.src = "bob.png";
+            cangreburger.src = "cangreburger.png";
+            fondoBob.src = "fondo_bob_esponja.mp3";
+            fondo.src = "fondo.jpg";
+            pez.src = "pez.png";
+            aplausos.src = "aplausos.mp3";
+            bobFinal.src = "bob_final.png";
+
+            paint();
+        }
+
+        function empezar() {
+    
+            clearInterval(intervalo);
+            Interval = setInterval(iniciar, 10);
+        }
+        
+        function iniciar(){
+
+            centesimas++;
+
+            if (centesimas <= 9){
+                appendCentesimas = "0" + centesimas;
+            }
+
+            if (centesimas > 9){
+                appendCentesimas = centesimas;
+            }
+
+            if (centesimas > 99){
+                segundos++;
+                appendSegundos = "0" + segundos;
+                centesimas = 0;
+                appendCentesimas = "0" + 0;
+            }
+
+            if (segundos > 9){
+                appendSegundos = segundos;
+            }else{
+                appendSegundos= "0"+segundos;
+            }
+
+            if (segundos > 59){
+                minutos++;
+                segundos = 0;
+                appendSegundos = "0" + segundos;
+            }
+
+            if (minutos > 9){
+                appendMinutos = minutos;
+            }else{
+                appendMinutos = "0"+minutos;
+            }
+            
+        }
+
+        function paint(){
+
+            window.requestAnimationFrame(paint)
+
+            ctx.font = "50px Arial";
+            ctx.fillText("Tiempo: " + minutos + ":" +  segundos + ":" + centesimas, 50, 1100)
+
+            ctx.fillStyle = "white"; 
+            ctx.fillRect(0, 0, 1000, 1200);
+
+            //player1.pintar(ctx);
+            ctx.drawImage(fondo, 0, 0, 1000, 1200);
+            ctx.drawImage(bob, player1.x, player1.y, 30, 30);
+            ctx.drawImage(cangreburger, player2.x, player2.y, 80, 80);
+
+
+
+            //player2.pintar(ctx);
+            
+            ctx.font = "50px Arial";
+            ctx.fillText("Tiempo: " + minutos + ":" + segundos + ":" + centesimas, 50, 1100)
+
+
+            for (var i = 0;i<pared.length; i++){
+                pared[i].pintar(ctx);
+            }
+
+            if (pause){
+                ctx.fillStyle = "rgb(0,0,0,0.7";
+                ctx.fillRect(0,0, 2000, 2000); 
+
+                ctx.fillStyle = "red";
+                ctx.font = "100px Arial"
+                ctx.fillText("PAUSA", 300, 300)
+
+                ctx.font = "40px Arial"
+                ctx.fillText("Instrucciones: ", 100, 400)
+                
+                ctx.font = "30px Arial"
+                ctx.fillText("- Lleva a Bob Esponja hasta la cangreburger :D ", 100, 500)
+                ctx.fillText("- Despausar con la barra de ESPACIO", 100, 550)
+                ctx.fillText("- Moverte con WASD o con las flechas del teclado ", 100, 600)
+                ctx.fillText("- Diviertete! ", 100, 650)
+
+                ctx.font = "40px Arial"
+                ctx.fillText("Pista: ", 100, 800)
+
+                ctx.font = "30px Arial"
+                ctx.fillText("- Hay una salida, pero dos formas de llegar...", 100, 900)
+
+                ctx.drawImage(pez, 700, 800, 250, 250)
+                fondoBob.pause()
+                fondoBob.volume = 0.5; 
+            }else if (seTocaron){
+                ctx.fillStyle = "rgb(0,0,0,0.7";
+                ctx.fillRect(0,0, 2000, 2000); 
+
+                ctx.fillStyle = "yellow"; 
+                ctx.font = "100px Arial"
+                ctx.fillText("¡GANASTE!", 240, 300)
+
+                ctx.font = "40px Arial"
+                ctx.fillText("Felicidades! Llevaste a Bob a la cangreburger ", 100, 500)
+
+                ctx.drawImage(bobFinal, 230, 600, 550, 300)
+
+                ctx.fillText("Presiona la tecla R para reiniciar el laberinto ", 100, 1050)
+
+
+                fondoBob.pause();
+
+            }else {
+                update();
+                fondoBob.play()
+                iniciar();
+            }
+        }
+
+        
+
+        function update(){
+
+            if (direccion == 'arriba') {
+                player1.y -= speed; 
+                if (player1.y<0){
+                    player1.y = 1000;
+                }
+            }
+
+            if (direccion == 'abajo') {
+                player1.y += speed;
+
+                if (player1.y>1000){
+                    player1.y = 0;
+                }
+            }
+
+            if (direccion == 'izquierda') {
+                player1.x -= speed;
+                if (player1.x<0){
+                    player1.x = 1000;
+                }
+            }
+
+            if (direccion == 'derecha') {
+                player1.x += speed;
+                if (player1.x>1000){
+                    player1.x = 0;
+                }
+            }
+            
+            if (player1.se_tocan(player2)) {
+                seTocaron = true;
+                aplausos.play();
+            }
+
+            for (var i = 0; i<pared.length; i++){
+                if (player1.se_tocan(pared[i])){
+                if (direccion == "arriba"){
+                    player1.y += speed;
+                }
+                if (direccion == "abajo"){
+                    player1.y -= speed;
+                }
+                if (direccion == "izquierda"){
+                    player1.x += speed;
+                }
+                if (direccion == "derecha"){
+                    player1.x -= speed;
+                }
+            }
+            }
+        }
+
+        function random(number){
+            return Math.floor(Math.random()*number);
+        }
+        function randomColor(){
+            return 'rgba('+random(500)+','+random(500)+','+random(500)+',0.3)';
+        }
+
+
+        window.requestAnimationFrame = (function () {
+            return window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        function (callback) {
+            window.setTimeout(callback, 17);
+        };
+}());
+
+        function Cuadro(x, y, w, h, c){
+
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.c = c;
+
+            this.pintar = function (ctx) {
+            ctx.fillStyle = this.c;
+            ctx.fillRect(this.x, this.y, this.w, this.h);
+            ctx.strokeRect(this.x, this.y, this.w, this.h);
+            }
+    
+            console.log("hola");
+
+            this.se_tocan = function (target) { 
+
+            if(this.x < target.x + target.w &&
+            this.x + this.w > target.x && 
+            this.y < target.y + target.h && 
+            this.y + this.h > target.y){
+            return true;	
+            console.log("hola");
+
+             }
+            };
+        }
+
+        function actualizar(){location.reload(true);}
+     
+        document.addEventListener('keydown', function(e){
+            console.log(e);
+
+            if (e.keyCode == 87 || e.keyCode == 38) {
+                // super_y -= 5;
+                direccion = 'arriba';
+            }
+
+            if (e.keyCode == 83 || e.keyCode == 40) {
+                // super_y += 5;
+                direccion = 'abajo';
+            }
+
+            if (e.keyCode == 65 || e.keyCode == 37) {
+                // super_x -= 5;
+                direccion = 'izquierda';
+            }
+
+            if (e.keyCode == 68 || e.keyCode == 39) {
+                // super_x += 5;
+                direccion = 'derecha';
+            }
+            
+            if (e.keyCode == 32){
+                pause = (pause) ? false:true;
+            }
+            
+            if (e.keyCode == 82){
+                actualizar();
+            }
+        })
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        window.addEventListener('load', run, false);
+
+
+    </script>
+
+</body>
+</html>
